@@ -2,6 +2,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import List, Optional
 
+from search.step_words import steps_text
+
 @dataclass(slots=True)
 class WikiPathResult:
     """
@@ -44,7 +46,7 @@ class WikiPathResult:
 
         prefix = (
             f"✅ Путь найден за {self.elapsed_time:.2f} сек "
-            f"({self.steps_count} шагов):\n\n"
+            f"({steps_text(self.steps_count)}):\n\n"
         )
 
         parts = self.path or []
