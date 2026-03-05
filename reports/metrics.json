@@ -1,0 +1,454 @@
+{
+  "generated_at": "2026-03-06T02:31:58",
+  "total_cases": 30,
+  "success_count": 21,
+  "success_rate": 70.0,
+  "avg_time": 8.769385593332117,
+  "median_time": 0.7582175499992445,
+  "p90_time": 24.740654199995333,
+  "p95_time": 34.33771199999319,
+  "max_time": 35.28482559999975,
+  "avg_path_len_success": 2.9047619047619047,
+  "status_counts": {
+    "success": 21,
+    "timeout": 3,
+    "not_found": 6
+  },
+  "difficulty_stats": {
+    "easy": {
+      "total": 4,
+      "success_rate": 75.0,
+      "avg_time": 6.610806574997696
+    },
+    "medium": {
+      "total": 7,
+      "success_rate": 100.0,
+      "avg_time": 6.984670142855196
+    },
+    "hard": {
+      "total": 10,
+      "success_rate": 60.0,
+      "avg_time": 2.7759785199988984
+    },
+    "very_hard": {
+      "total": 9,
+      "success_rate": 55.55555555555556,
+      "avg_time": 17.776207255555263
+    }
+  },
+  "top_slowest": [
+    {
+      "case_id": "V-0009",
+      "start": "Греческая мифология",
+      "end": "Квантовая хромодинамика",
+      "difficulty": "very_hard",
+      "elapsed_sec": 35.28482559999975,
+      "status": "success"
+    },
+    {
+      "case_id": "V-0007",
+      "start": "Геология Марса",
+      "end": "Метаэтика",
+      "difficulty": "very_hard",
+      "elapsed_sec": 35.073653600004036,
+      "status": "success"
+    },
+    {
+      "case_id": "M-0003",
+      "start": "Османская империя",
+      "end": "Балканский полуостров",
+      "difficulty": "medium",
+      "elapsed_sec": 34.33771199999319,
+      "status": "success"
+    },
+    {
+      "case_id": "V-0003",
+      "start": "Исландские саги",
+      "end": "Нейроморфные вычисления",
+      "difficulty": "very_hard",
+      "elapsed_sec": 24.740654199995333,
+      "status": "timeout"
+    },
+    {
+      "case_id": "V-0008",
+      "start": "Список астероидов",
+      "end": "Теория автоматов",
+      "difficulty": "very_hard",
+      "elapsed_sec": 24.700100299989572,
+      "status": "success"
+    },
+    {
+      "case_id": "V-0004",
+      "start": "Макроэкономика",
+      "end": "Квантовая гравитация",
+      "difficulty": "very_hard",
+      "elapsed_sec": 23.774840099998983,
+      "status": "success"
+    },
+    {
+      "case_id": "E-0004",
+      "start": "Пушкин",
+      "end": "Русские поэты",
+      "difficulty": "easy",
+      "elapsed_sec": 23.694327199991676,
+      "status": "timeout"
+    },
+    {
+      "case_id": "H-0005",
+      "start": "Йота Персея",
+      "end": "Чемпионат Уругвая по футболу",
+      "difficulty": "hard",
+      "elapsed_sec": 23.36360139999306,
+      "status": "timeout"
+    },
+    {
+      "case_id": "V-0002",
+      "start": "Французская революция",
+      "end": "Клеточные автоматы",
+      "difficulty": "very_hard",
+      "elapsed_sec": 15.186072700002114,
+      "status": "success"
+    },
+    {
+      "case_id": "M-0001",
+      "start": "Метрополитен",
+      "end": "Общественный транспорт",
+      "difficulty": "medium",
+      "elapsed_sec": 11.753940400012652,
+      "status": "success"
+    }
+  ],
+  "results": [
+    {
+      "case_id": "E-0001",
+      "start": "Собака",
+      "end": "Домашние животные",
+      "difficulty": "easy",
+      "elapsed_sec": 1.1860703999991529,
+      "success": true,
+      "path_len": 2,
+      "status": "success",
+      "error": null
+    },
+    {
+      "case_id": "E-0002",
+      "start": "Москва",
+      "end": "Россия",
+      "difficulty": "easy",
+      "elapsed_sec": 1.105023500000243,
+      "success": true,
+      "path_len": 2,
+      "status": "success",
+      "error": null
+    },
+    {
+      "case_id": "E-0003",
+      "start": "Юпитер",
+      "end": "Солнечная система",
+      "difficulty": "easy",
+      "elapsed_sec": 0.4578051999997115,
+      "success": true,
+      "path_len": 2,
+      "status": "success",
+      "error": null
+    },
+    {
+      "case_id": "E-0004",
+      "start": "Пушкин",
+      "end": "Русские поэты",
+      "difficulty": "easy",
+      "elapsed_sec": 23.694327199991676,
+      "success": false,
+      "path_len": 0,
+      "status": "timeout",
+      "error": null
+    },
+    {
+      "case_id": "H-0001",
+      "start": "Нейросетевой трансформер",
+      "end": "Большие языковые модели",
+      "difficulty": "hard",
+      "elapsed_sec": 0.16657370000029914,
+      "success": false,
+      "path_len": 0,
+      "status": "not_found",
+      "error": null
+    },
+    {
+      "case_id": "H-0002",
+      "start": "Дифференциальная геометрия",
+      "end": "Тензорный анализ",
+      "difficulty": "hard",
+      "elapsed_sec": 0.4217186000023503,
+      "success": true,
+      "path_len": 3,
+      "status": "success",
+      "error": null
+    },
+    {
+      "case_id": "H-0003",
+      "start": "Нейтринные осцилляции",
+      "end": "Космология",
+      "difficulty": "hard",
+      "elapsed_sec": 0.7538356000004569,
+      "success": true,
+      "path_len": 3,
+      "status": "success",
+      "error": null
+    },
+    {
+      "case_id": "H-0004",
+      "start": "Теория категорий",
+      "end": "Прикладная математика",
+      "difficulty": "hard",
+      "elapsed_sec": 0.25720359999104403,
+      "success": true,
+      "path_len": 2,
+      "status": "success",
+      "error": null
+    },
+    {
+      "case_id": "H-0005",
+      "start": "Йота Персея",
+      "end": "Чемпионат Уругвая по футболу",
+      "difficulty": "hard",
+      "elapsed_sec": 23.36360139999306,
+      "success": false,
+      "path_len": 0,
+      "status": "timeout",
+      "error": null
+    },
+    {
+      "case_id": "H-0006",
+      "start": "Когнитивная лингвистика",
+      "end": "Нейропсихология",
+      "difficulty": "hard",
+      "elapsed_sec": 0.5189785999973537,
+      "success": true,
+      "path_len": 3,
+      "status": "success",
+      "error": null
+    },
+    {
+      "case_id": "H-0007",
+      "start": "Анизотропия",
+      "end": "Геофизика",
+      "difficulty": "hard",
+      "elapsed_sec": 1.1485647999943467,
+      "success": true,
+      "path_len": 3,
+      "status": "success",
+      "error": null
+    },
+    {
+      "case_id": "H-0008",
+      "start": "Распределённые транзакции",
+      "end": "Консенсусные алгоритмы",
+      "difficulty": "hard",
+      "elapsed_sec": 0.15440670000680257,
+      "success": false,
+      "path_len": 0,
+      "status": "not_found",
+      "error": null
+    },
+    {
+      "case_id": "H-0009",
+      "start": "Теорема Гёделя",
+      "end": "Математическая логика",
+      "difficulty": "hard",
+      "elapsed_sec": 0.5427803000056883,
+      "success": true,
+      "path_len": 3,
+      "status": "success",
+      "error": null
+    },
+    {
+      "case_id": "H-0010",
+      "start": "Палеоклиматология",
+      "end": "Ледниковые периоды",
+      "difficulty": "hard",
+      "elapsed_sec": 0.43212189999758266,
+      "success": false,
+      "path_len": 0,
+      "status": "not_found",
+      "error": null
+    },
+    {
+      "case_id": "M-0001",
+      "start": "Метрополитен",
+      "end": "Общественный транспорт",
+      "difficulty": "medium",
+      "elapsed_sec": 11.753940400012652,
+      "success": true,
+      "path_len": 2,
+      "status": "success",
+      "error": null
+    },
+    {
+      "case_id": "M-0002",
+      "start": "Византия",
+      "end": "Средние века",
+      "difficulty": "medium",
+      "elapsed_sec": 0.7625994999980321,
+      "success": true,
+      "path_len": 2,
+      "status": "success",
+      "error": null
+    },
+    {
+      "case_id": "M-0003",
+      "start": "Османская империя",
+      "end": "Балканский полуостров",
+      "difficulty": "medium",
+      "elapsed_sec": 34.33771199999319,
+      "success": true,
+      "path_len": 2,
+      "status": "success",
+      "error": null
+    },
+    {
+      "case_id": "M-0004",
+      "start": "Linux",
+      "end": "Операционная система",
+      "difficulty": "medium",
+      "elapsed_sec": 0.4882431000005454,
+      "success": true,
+      "path_len": 2,
+      "status": "success",
+      "error": null
+    },
+    {
+      "case_id": "M-0005",
+      "start": "Kubernetes",
+      "end": "Контейнеризация",
+      "difficulty": "medium",
+      "elapsed_sec": 0.1706997000001138,
+      "success": true,
+      "path_len": 2,
+      "status": "success",
+      "error": null
+    },
+    {
+      "case_id": "M-0006",
+      "start": "Эволюция",
+      "end": "Популяционная генетика",
+      "difficulty": "medium",
+      "elapsed_sec": 0.45408329999190755,
+      "success": true,
+      "path_len": 2,
+      "status": "success",
+      "error": null
+    },
+    {
+      "case_id": "M-0007",
+      "start": "Импрессионизм",
+      "end": "История искусства",
+      "difficulty": "medium",
+      "elapsed_sec": 0.9254129999899305,
+      "success": true,
+      "path_len": 3,
+      "status": "success",
+      "error": null
+    },
+    {
+      "case_id": "V-0001",
+      "start": "Сигнальные пути клетки",
+      "end": "Глобальные логистические сети",
+      "difficulty": "very_hard",
+      "elapsed_sec": 0.2831090999970911,
+      "success": false,
+      "path_len": 0,
+      "status": "not_found",
+      "error": null
+    },
+    {
+      "case_id": "V-0002",
+      "start": "Французская революция",
+      "end": "Клеточные автоматы",
+      "difficulty": "very_hard",
+      "elapsed_sec": 15.186072700002114,
+      "success": true,
+      "path_len": 6,
+      "status": "success",
+      "error": null
+    },
+    {
+      "case_id": "V-0003",
+      "start": "Исландские саги",
+      "end": "Нейроморфные вычисления",
+      "difficulty": "very_hard",
+      "elapsed_sec": 24.740654199995333,
+      "success": false,
+      "path_len": 0,
+      "status": "timeout",
+      "error": null
+    },
+    {
+      "case_id": "V-0004",
+      "start": "Макроэкономика",
+      "end": "Квантовая гравитация",
+      "difficulty": "very_hard",
+      "elapsed_sec": 23.774840099998983,
+      "success": true,
+      "path_len": 4,
+      "status": "success",
+      "error": null
+    },
+    {
+      "case_id": "V-0005",
+      "start": "Классическая механика",
+      "end": "Блокчейн-консенсус",
+      "difficulty": "very_hard",
+      "elapsed_sec": 0.43209550000028685,
+      "success": false,
+      "path_len": 0,
+      "status": "not_found",
+      "error": null
+    },
+    {
+      "case_id": "V-0006",
+      "start": "Термоядерный синтез",
+      "end": "Геополитика Ближнего Востока",
+      "difficulty": "very_hard",
+      "elapsed_sec": 0.5105142000102205,
+      "success": false,
+      "path_len": 0,
+      "status": "not_found",
+      "error": null
+    },
+    {
+      "case_id": "V-0007",
+      "start": "Геология Марса",
+      "end": "Метаэтика",
+      "difficulty": "very_hard",
+      "elapsed_sec": 35.073653600004036,
+      "success": true,
+      "path_len": 4,
+      "status": "success",
+      "error": null
+    },
+    {
+      "case_id": "V-0008",
+      "start": "Список астероидов",
+      "end": "Теория автоматов",
+      "difficulty": "very_hard",
+      "elapsed_sec": 24.700100299989572,
+      "success": true,
+      "path_len": 4,
+      "status": "success",
+      "error": null
+    },
+    {
+      "case_id": "V-0009",
+      "start": "Греческая мифология",
+      "end": "Квантовая хромодинамика",
+      "difficulty": "very_hard",
+      "elapsed_sec": 35.28482559999975,
+      "success": true,
+      "path_len": 5,
+      "status": "success",
+      "error": null
+    }
+  ],
+  "version": "2.1.0"
+}
