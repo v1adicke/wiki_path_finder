@@ -134,12 +134,26 @@ Healthcheck:
 curl http://localhost:8081/health
 ```
 
+Runtime metrics:
+
+```bash
+curl http://localhost:8081/metrics
+```
+
 После запуска сервиса включи в API:
 
 ```env
 USE_RUST_SEARCH=True
 RUST_SEARCH_URL=http://127.0.0.1:8081
 RUST_SEARCH_TIMEOUT=35
+```
+
+Параметры самого Rust сервиса:
+
+```env
+RUST_CACHE_SIZE=4000
+RUST_WIKI_MAX_CONCURRENCY=32
+RUST_WIKI_RETRIES=3
 ```
 
 ## Структура

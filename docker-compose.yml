@@ -4,6 +4,10 @@ services:
       context: ./rust_search_service
       dockerfile: Dockerfile
     container_name: wiki-path-rust-search
+    environment:
+      - RUST_CACHE_SIZE=${RUST_CACHE_SIZE:-4000}
+      - RUST_WIKI_MAX_CONCURRENCY=${RUST_WIKI_MAX_CONCURRENCY:-32}
+      - RUST_WIKI_RETRIES=${RUST_WIKI_RETRIES:-3}
     restart: unless-stopped
 
   api:
