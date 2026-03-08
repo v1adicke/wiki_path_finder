@@ -72,11 +72,15 @@ export const Navbar = () => {
             href={social.href}
             target="_blank"
             rel="noopener noreferrer"
-            className="p-1.5 rounded-md border border-border bg-secondary/30 hover:bg-secondary/50 transition-colors"
+            className="group p-1.5 rounded-md border border-border bg-secondary/30 text-muted-foreground hover:text-foreground hover:bg-secondary/50 transition-colors"
             aria-label={social.label}
             title={social.label}
           >
-            <img src={social.iconSrc} alt={social.label} className="w-3.5 h-3.5" />
+            <img
+              src={social.iconSrc}
+              alt={social.label}
+              className="w-3.5 h-3.5 opacity-80 group-hover:opacity-100 dark:invert transition-opacity"
+            />
           </a>
         ))}
         <button
