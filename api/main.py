@@ -1,11 +1,14 @@
 from __future__ import annotations
 
+import asyncio
+from collections import defaultdict
 from dataclasses import asdict
 import os
 from pathlib import Path
 import json
+import time
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
@@ -15,6 +18,35 @@ from search.path_finder import WikiPathFinder
 
 FORBIDDEN_TITLE_CHARS = set("#<>[]{}|")
 MAX_TITLE_LENGTH = 255
+
+PRODUCTION: bool = os.getenv("PRODUCTION", "False").lower() in ("true", "1", "yes")
+
+_RATE_LIMIT_CALLS: int = int(os.getenv("RATE_LIMIT_CALLS", "10"))
+_RATE_LIMIT_WINDOW: int = int(os.getenv("RATE_LIMIT_WINDOW", "60"))
+
+
+class _RateLimiter:
+    """Sliding-window rate limiter по IP-адресу клиента"""
+
+    def __init__(self, max_calls: int, window_seconds: int) -> None:
+        self._max_calls = max_calls
+        self._window = window_seconds
+        self._buckets: dict[str, list[float]] = defaultdict(list)
+        self._lock = asyncio.Lock()
+
+    async def is_allowed(self, key: str) -> bool:
+        async with self._lock:
+            now = time.monotonic()
+            cutoff = now - self._window
+            bucket = self._buckets[key]
+            self._buckets[key] = [t for t in bucket if t > cutoff]
+            if len(self._buckets[key]) >= self._max_calls:
+                return False
+            self._buckets[key].append(now)
+            return True
+
+
+_rate_limiter = _RateLimiter(max_calls=_RATE_LIMIT_CALLS, window_seconds=_RATE_LIMIT_WINDOW)
 
 
 def _parse_cors_origins() -> list[str]:
@@ -52,7 +84,22 @@ class SearchResponse(BaseModel):
     steps_count: int
 
 
-app = FastAPI(title="Wiki Path Finder API")
+app = FastAPI(
+    title="Wiki Path Finder API",
+    docs_url=None if PRODUCTION else "/docs",
+    redoc_url=None if PRODUCTION else "/redoc",
+    openapi_url=None if PRODUCTION else "/openapi.json",
+)
+
+
+@app.middleware("http")
+async def add_security_headers(request: Request, call_next):
+    response = await call_next(request)
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    return response
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -69,7 +116,11 @@ async def health() -> dict[str, str]:
 
 
 @app.post("/api/search", response_model=SearchResponse)
-async def search_path(payload: SearchRequest) -> SearchResponse:
+async def search_path(payload: SearchRequest, request: Request) -> SearchResponse:
+    client_ip = request.client.host if request.client else "unknown"
+    if not await _rate_limiter.is_allowed(client_ip):
+        raise HTTPException(status_code=429, detail="Too many requests. Please wait before searching again.")
+
     start_article = _validate_title(payload.start_article, "start_article")
     end_article = _validate_title(payload.end_article, "end_article")
 

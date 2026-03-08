@@ -14,7 +14,7 @@ class WikiApiClient:
     def __init__(
         self,
         base_url: str = "https://ru.wikipedia.org/w/api.php",
-        user_agent: str = "WikiPathFinder/1.0 (vdenyshev@inbox.ru)",
+        user_agent: str = "WikiPathFinder/1.0",
         total_timeout: int = 30,
         connector_limit: int = 50,
         retries: int = 3,
