@@ -10,20 +10,31 @@ const SearchPage = () => {
   const [endArticle, setEndArticle] = useState("");
   const [status, setStatus] = useState<SearchStatus>("idle");
   const [result, setResult] = useState<SearchResult | null>(null);
+  const [errorText, setErrorText] = useState<string | null>(null);
 
   const isSearching = status === "heuristic" || status === "exact";
 
   const handleSearch = useCallback(async () => {
     if (!startArticle.trim() || !endArticle.trim() || isSearching) return;
     setResult(null);
+    setErrorText(null);
     try {
       const res = await startSearch(startArticle.trim(), endArticle.trim(), (p) => {
         setStatus(p.status);
         if (p.result) setResult(p.result);
       });
       setResult(res);
-      setStatus(res.error ? "error" : "done");
-    } catch {
+      if (res.error) {
+        setErrorText(res.error);
+        setStatus("error");
+        return;
+      }
+      if (!res.path || res.path.length === 0) {
+        setErrorText("Путь не найден за отведенное время. Попробуйте другую пару статей.");
+      }
+      setStatus("done");
+    } catch (err) {
+      setErrorText(err instanceof Error ? err.message : "Произошла ошибка поиска");
       setStatus("error");
     }
   }, [startArticle, endArticle, isSearching]);
@@ -137,6 +148,19 @@ const SearchPage = () => {
             className="relative z-10 mt-12 w-full max-w-3xl"
           >
             <PathTimeline result={result} />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {errorText && (
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            className="relative z-10 mt-8 w-full max-w-2xl rounded-lg border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm text-destructive"
+          >
+            {errorText}
           </motion.div>
         )}
       </AnimatePresence>

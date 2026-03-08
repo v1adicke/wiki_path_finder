@@ -21,7 +21,7 @@ MAX_TITLE_LENGTH = 255
 
 PRODUCTION: bool = os.getenv("PRODUCTION", "False").lower() in ("true", "1", "yes")
 
-_RATE_LIMIT_CALLS: int = int(os.getenv("RATE_LIMIT_CALLS", "10"))
+_RATE_LIMIT_CALLS: int = int(os.getenv("RATE_LIMIT_CALLS", "30"))
 _RATE_LIMIT_WINDOW: int = int(os.getenv("RATE_LIMIT_WINDOW", "60"))
 
 
@@ -47,6 +47,21 @@ class _RateLimiter:
 
 
 _rate_limiter = _RateLimiter(max_calls=_RATE_LIMIT_CALLS, window_seconds=_RATE_LIMIT_WINDOW)
+
+
+def _extract_client_ip(request: Request) -> str:
+    """Определяет IP клиента с учетом reverse-proxy заголовков"""
+    forwarded_for = request.headers.get("x-forwarded-for", "").strip()
+    if forwarded_for:
+        first_hop = forwarded_for.split(",")[0].strip()
+        if first_hop:
+            return first_hop
+
+    real_ip = request.headers.get("x-real-ip", "").strip()
+    if real_ip:
+        return real_ip
+
+    return request.client.host if request.client else "unknown"
 
 
 def _parse_cors_origins() -> list[str]:
@@ -117,7 +132,7 @@ async def health() -> dict[str, str]:
 
 @app.post("/api/search", response_model=SearchResponse)
 async def search_path(payload: SearchRequest, request: Request) -> SearchResponse:
-    client_ip = request.client.host if request.client else "unknown"
+    client_ip = _extract_client_ip(request)
     if not await _rate_limiter.is_allowed(client_ip):
         raise HTTPException(status_code=429, detail="Too many requests. Please wait before searching again.")
 

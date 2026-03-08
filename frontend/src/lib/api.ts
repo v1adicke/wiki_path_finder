@@ -5,6 +5,10 @@ export interface SearchResult {
   steps_count: number;
 }
 
+interface ApiErrorPayload {
+  detail?: string;
+}
+
 export type SearchStatus = "idle" | "heuristic" | "exact" | "done" | "error";
 
 export interface SearchProgress {
@@ -67,7 +71,14 @@ export async function startSearch(
   });
 
   if (!response.ok) {
-    throw new Error(`Search request failed with status ${response.status}`);
+    let detail = "";
+    try {
+      const payload = (await response.json()) as ApiErrorPayload;
+      detail = payload.detail ? `: ${payload.detail}` : "";
+    } catch {
+      // Keep a compact fallback if response body is not JSON.
+    }
+    throw new Error(`Search request failed with status ${response.status}${detail}`);
   }
 
   const result = (await response.json()) as SearchResult;
