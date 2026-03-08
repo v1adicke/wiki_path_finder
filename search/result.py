@@ -6,15 +6,7 @@ from search.step_words import steps_text
 
 @dataclass(slots=True)
 class WikiPathResult:
-    """
-    Результат поиска пути.
-
-    Attributes:
-        path: Путь из страниц от начала до конца.
-        elapsed_time: Время поиска.
-        error: Сообщение об ошибке, если она возникла.
-        steps_count: Количество узлов в пути.
-    """
+    """Хранит итог поиска пути и базовые поля для вывода"""
     path: Optional[List[str]] = None
     elapsed_time: float = 0.0
     error: Optional[str] = None
@@ -23,21 +15,12 @@ class WikiPathResult:
 
     @property
     def success(self) -> bool:
-        """Возвращает True если ошибок не возникло."""
+        """Показывает что путь найден без ошибок"""
         return self.path is not None and self.error is None
 
 
     def format(self, time_limit: int = 30, max_len: int = 4000) -> str:
-        """
-        Форматирование результата.
-
-        Args:
-            time_limit: Максимальное время поиска.
-            max_len: Максимальная длина вывода.
-
-        Returns:
-            Готовый вывод с путем или ошибкой.
-        """
+        """Собирает человекочитаемый текст результата для ответа пользователю"""
         if self.error:
             return f"❌ Ошибка: {self.error}"
 

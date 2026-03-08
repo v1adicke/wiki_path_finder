@@ -9,9 +9,7 @@ import aiohttp
 
 
 class WikiApiClient:
-    """
-    Асинхронный клиент для Wikipedia API.
-    """
+    """Клиент к Wikipedia API с кешем и защитой от лишних повторов"""
 
     def __init__(
         self,
@@ -22,17 +20,7 @@ class WikiApiClient:
         retries: int = 3,
         cache_size: int = 2000,
     ) -> None:
-        """
-        Инициализация клиента API.
-
-        Args:
-            base_url: Базовый URL API.
-            user_agent: HTTP User-Agent.
-            total_timeout: Максимальное время для запроса.
-            connector_limit: Максимальное количество соединений.
-            retries: Количество попыток при ошибках/таймаутах.
-            cache_size: Размер in-memory LRU кеша по страницам.
-        """
+        """Настраивает клиент, таймауты, ретраи и размер кеша"""
         self._base_url = base_url
         self._user_agent = user_agent
         self._timeout = aiohttp.ClientTimeout(total=total_timeout)
@@ -105,9 +93,7 @@ class WikiApiClient:
         return self._session
 
     async def _fetch_json_with_retries(self, params: Dict[str, str]) -> Dict:
-        """
-        GET запрос с ретраями и экспоненциальной паузой.
-        """
+        """Делает GET и при сбоях повторяет с экспоненциальной паузой"""
         backoff = 1.0
         for attempt in range(self._retries):
             try:
@@ -147,9 +133,7 @@ class WikiApiClient:
         raise RuntimeError("Превышен лимит попыток")
 
     async def fetch_links(self, title: str) -> Set[str]:
-        """
-        Извлечение всех ссылок со страницы.
-        """
+        """Возвращает все исходящие ссылки со статьи"""
         title = (title or "").strip()
         if not title:
             return set()
@@ -190,9 +174,7 @@ class WikiApiClient:
         return set(result)
 
     async def fetch_backlinks(self, title: str) -> Set[str]:
-        """
-        Извлечение всех ссылок на страницу.
-        """
+        """Возвращает все статьи, которые ссылаются на эту страницу"""
         title = (title or "").strip()
         if not title:
             return set()

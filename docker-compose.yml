@@ -1,0 +1,35 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.python
+    container_name: wiki-path-api
+    command: ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000"]
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: wiki-path-frontend
+    depends_on:
+      - api
+    ports:
+      - "5173:5173"
+    restart: unless-stopped
+
+  telegram-bot:
+    build:
+      context: .
+      dockerfile: Dockerfile.python
+    container_name: wiki-path-telegram-bot
+    command: ["python", "-m", "telegram_bot.main"]
+    env_file:
+      - .env
+    depends_on:
+      - api
+    restart: unless-stopped
+    profiles:
+      - bot

@@ -1,1 +1,1 @@
-"""Benchmark service for Wiki Path Finder."""
+"""Бенчмарк-сервис для Wiki Path Finder"""

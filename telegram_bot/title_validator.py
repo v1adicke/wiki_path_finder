@@ -7,19 +7,13 @@ FORBIDDEN_CHARS = set("#<>[]{}|")
 
 
 def normalize_title(title: str) -> str:
-    """
-    Нормализует ввод.
-    """
+    """Приводит ввод к аккуратному виду для дальнейшей проверки"""
     t = (title or "").strip().replace("_", " ")
     return " ".join(t.split())
 
 
 def validate_title_syntax(title: str) -> Optional[str]:
-    """
-    Синтаксическая проверка названия.
-    Returns:
-        Текст ошибки или None, если всё ок.
-    """
+    """Проверяет базовые правила названия и возвращает текст ошибки или None"""
     if not title:
         return "Название страницы не должно быть пустым."
     if len(title) > 255:

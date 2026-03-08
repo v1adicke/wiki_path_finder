@@ -1,10 +1,7 @@
-# telegram_bot/step_words.py
 from __future__ import annotations
 
 def steps_word(n: int) -> str:
-    """
-    Возвращает корректную форму слова 'шаг' для указанного числа.
-    """
+    """Подбирает правильную форму слова шаг для числа"""
     n = abs(int(n))
     n100 = n % 100
     if 11 <= n100 <= 14:
@@ -18,7 +15,5 @@ def steps_word(n: int) -> str:
 
 
 def steps_text(n: int) -> str:
-    """
-    Возвращает строку "<n> шаг/шага/шагов".
-    """
+    """Собирает строку вида число плюс корректная форма слова шаг"""
     return f"{n} {steps_word(n)}"

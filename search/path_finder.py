@@ -10,22 +10,15 @@ from search.result import WikiPathResult
 
 
 class WikiPathFinder:
-    """
-    Двунаправленный поиск с использованием API.
-    """
+    """Ищет путь между статьями через двунаправленный обход"""
 
     def __init__(self, client: WikiApiClient, time_limit: int = 30) -> None:
-        """
-        Args:
-            client: WikiApiClient для взаимодействия с API.
-            time_limit: Максимальное время поиска (сек).
-        """
+        """Принимает API-клиент и лимит времени на поиск"""
         self._client = client
         self._time_limit = time_limit
 
     @staticmethod
     def _tokenize_title(title: str) -> Set[str]:
-        # Выделяем только смысловые токены для грубой эвристики близости статей.
         return {
             token
             for token in re.findall(r"[\w\-]+", (title or "").lower())
@@ -50,7 +43,6 @@ class WikiPathFinder:
             tokens = WikiPathFinder._tokenize_title(title)
             overlap = len(tokens & target_tokens) if target_tokens else 0
             contains_target = 1 if target_lc and target_lc in title_lc else 0
-            # Более короткие названия чаще являются общими сущностями, а не списками.
             return (contains_target, overlap, -len(title_lc))
 
         ranked.sort(key=score, reverse=True)
@@ -62,9 +54,7 @@ class WikiPathFinder:
         prev_bwd: Dict[str, Optional[str]],
         meet_node: str,
     ) -> List[str]:
-        """
-        Построение пути через узел встречи прямого и обратного поиска.
-        """
+        """Собирает итоговый путь через точку встречи двух фронтов"""
         path_front: List[str] = []
         node: Optional[str] = meet_node
         while node is not None:
@@ -106,7 +96,6 @@ class WikiPathFinder:
         start_tokens = self._tokenize_title(start)
 
         while fwd_front and bwd_front and (time.monotonic() - t0) < time_budget:
-            # Раннее завершение, если уже встретились фронты на границе уровней.
             border_intersection = fwd_front & bwd_front
             if border_intersection:
                 border_node = next(iter(border_intersection))
@@ -180,9 +169,7 @@ class WikiPathFinder:
         return None, time.monotonic() - t0
 
     async def find_path(self, start: str, end: str) -> WikiPathResult:
-        """
-        Находит путь между статьями Википедии через двунаправленный поиск.
-        """
+        """Находит путь между двумя статьями и возвращает результат поиска"""
         t0 = time.monotonic()
 
         start = (start or "").strip()
@@ -197,7 +184,6 @@ class WikiPathFinder:
             elapsed = time.monotonic() - t0
             return WikiPathResult(path=[start], elapsed_time=elapsed, steps_count=1)
 
-        # Сначала быстрый проход с ограничением ветвления, затем точный fallback.
         fast_budget = min(10.0, self._time_limit * 0.6)
         fast_path, _ = await self._search_bidirectional(
             start,
