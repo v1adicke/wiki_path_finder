@@ -242,34 +242,21 @@ const Dashboard = () => {
             className="rounded-xl border border-border bg-card/90 md:bg-card/60 md:backdrop-blur-sm p-6"
           >
             <h3 className="text-sm font-mono text-muted-foreground mb-6 uppercase tracking-wider">Время vs Длина пути</h3>
-            {isMobile ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
-                <div className="rounded-lg border border-border bg-secondary/30 p-3">
-                  <p className="text-xs text-muted-foreground mb-1">Точек на графике</p>
-                  <p className="font-mono text-foreground">{scatterData.filter((d) => d.y > 0).length}</p>
-                </div>
-                <div className="rounded-lg border border-border bg-secondary/30 p-3">
-                  <p className="text-xs text-muted-foreground mb-1">Средняя длина пути</p>
-                  <p className="font-mono text-foreground">{metrics.avg_path_len_success.toFixed(2)}</p>
-                </div>
-              </div>
-            ) : (
-              <div className="pointer-events-none md:pointer-events-auto" style={{ touchAction: "pan-y" }}>
-                <ResponsiveContainer width="100%" height={240}>
-                  <ScatterChart>
-                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(0,0%,14%)" />
-                    <XAxis type="number" dataKey="x" name="Время (с)" tick={{ fill: "hsl(0,0%,55%)", fontSize: 11 }} axisLine={false} />
-                    <YAxis type="number" dataKey="y" name="Длина пути" tick={{ fill: "hsl(0,0%,55%)", fontSize: 11 }} axisLine={false} />
-                    <Tooltip content={<CustomTooltip />} />
-                    <Scatter data={scatterData.filter(d => d.y > 0)} name="Результаты">
-                      {scatterData.filter(d => d.y > 0).map((entry, i) => (
-                        <Cell key={i} fill={entry.fill} fillOpacity={0.8} />
-                      ))}
-                    </Scatter>
-                  </ScatterChart>
-                </ResponsiveContainer>
-              </div>
-            )}
+            <div className="pointer-events-none md:pointer-events-auto" style={{ touchAction: "pan-y" }}>
+              <ResponsiveContainer width="100%" height={240}>
+                <ScatterChart>
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(0,0%,14%)" />
+                  <XAxis type="number" dataKey="x" name="Время (с)" tick={{ fill: "hsl(0,0%,55%)", fontSize: 11 }} axisLine={false} />
+                  <YAxis type="number" dataKey="y" name="Длина пути" tick={{ fill: "hsl(0,0%,55%)", fontSize: 11 }} axisLine={false} />
+                  <Tooltip content={<CustomTooltip />} />
+                  <Scatter data={scatterData.filter(d => d.y > 0)} name="Результаты">
+                    {scatterData.filter(d => d.y > 0).map((entry, i) => (
+                      <Cell key={i} fill={entry.fill} fillOpacity={0.8} />
+                    ))}
+                  </Scatter>
+                </ScatterChart>
+              </ResponsiveContainer>
+            </div>
           </motion.div>
         </div>
 
