@@ -19,9 +19,11 @@ export const Navbar = () => {
       className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4 bg-background/80 backdrop-blur-md border-b border-border/50"
     >
       <Link to="/" className="flex items-center gap-2">
-        <div className="w-6 h-6 rounded-md bg-primary/20 flex items-center justify-center">
-          <div className="w-2 h-2 rounded-full bg-primary" />
-        </div>
+        <img
+          src="/favicon.svg"
+          alt="WikiPath logo"
+          className="w-6 h-6 dark:invert"
+        />
         <span className="font-semibold text-sm text-foreground">WikiPath</span>
       </Link>
 
