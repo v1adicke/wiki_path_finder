@@ -104,7 +104,7 @@ const Dashboard = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="relative min-h-screen bg-background overflow-x-hidden" style={{ overscrollBehaviorY: "contain" }}>
       <div className="absolute inset-0 bg-dot pointer-events-none opacity-20" />
       <div className="relative z-10 max-w-6xl mx-auto px-4 py-16">
         <motion.div
@@ -127,7 +127,7 @@ const Dashboard = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.05 }}
-              className="rounded-xl border border-border bg-card/60 backdrop-blur-sm p-4"
+              className="rounded-xl border border-border bg-card/90 md:bg-card/60 md:backdrop-blur-sm p-4"
             >
               <card.icon className="w-4 h-4 text-muted-foreground mb-2" />
               <p className="text-2xl font-bold font-mono text-foreground">{card.value}</p>
@@ -141,7 +141,7 @@ const Dashboard = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="rounded-xl border border-border bg-card/60 backdrop-blur-sm p-6"
+            className="rounded-xl border border-border bg-card/90 md:bg-card/60 md:backdrop-blur-sm p-6"
           >
             <h3 className="text-sm font-mono text-muted-foreground mb-6 uppercase tracking-wider">Распределение статусов</h3>
             <div className="pointer-events-none md:pointer-events-auto" style={{ touchAction: "pan-y" }}>
@@ -178,7 +178,7 @@ const Dashboard = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="rounded-xl border border-border bg-card/60 backdrop-blur-sm p-6"
+            className="rounded-xl border border-border bg-card/90 md:bg-card/60 md:backdrop-blur-sm p-6"
           >
             <h3 className="text-sm font-mono text-muted-foreground mb-6 uppercase tracking-wider">Успешность по сложности</h3>
             <div className="pointer-events-none md:pointer-events-auto" style={{ touchAction: "pan-y" }}>
@@ -201,7 +201,7 @@ const Dashboard = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
-            className="rounded-xl border border-border bg-card/60 backdrop-blur-sm p-6"
+            className="rounded-xl border border-border bg-card/90 md:bg-card/60 md:backdrop-blur-sm p-6"
           >
             <h3 className="text-sm font-mono text-muted-foreground mb-6 uppercase tracking-wider">Среднее время по сложности</h3>
             <div className="pointer-events-none md:pointer-events-auto" style={{ touchAction: "pan-y" }}>
@@ -224,7 +224,7 @@ const Dashboard = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6 }}
-            className="rounded-xl border border-border bg-card/60 backdrop-blur-sm p-6"
+            className="rounded-xl border border-border bg-card/90 md:bg-card/60 md:backdrop-blur-sm p-6"
           >
             <h3 className="text-sm font-mono text-muted-foreground mb-6 uppercase tracking-wider">Время vs Длина пути</h3>
             {isMobile ? (
@@ -262,61 +262,92 @@ const Dashboard = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.7 }}
-          className="mt-8 rounded-xl border border-border bg-card/60 backdrop-blur-sm overflow-hidden"
+          className="mt-8 rounded-xl border border-border bg-card/90 md:bg-card/60 md:backdrop-blur-sm overflow-hidden"
         >
           <h3 className="text-sm font-mono text-muted-foreground uppercase tracking-wider p-6 pb-4">Все результаты</h3>
-          <div className="overflow-x-auto" style={{ WebkitOverflowScrolling: "touch" }}>
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-border text-xs font-mono text-muted-foreground uppercase">
-                  <th className="px-6 py-3 text-left">ID</th>
-                  <th className="px-6 py-3 text-left">Маршрут</th>
-                  <th className="px-6 py-3 text-left">Сложность</th>
-                  <th className="px-6 py-3 text-right">Время</th>
-                  <th className="px-6 py-3 text-right">Путь</th>
-                  <th className="px-6 py-3 text-center">Статус</th>
-                </tr>
-              </thead>
-              <tbody>
-                {metrics.results.map((r) => (
-                  <tr
-                    key={r.case_id}
-                    className="border-b border-border/50 hover:bg-secondary/30 transition-colors"
-                  >
-                    <td className="px-6 py-3 font-mono text-xs text-muted-foreground">{r.case_id}</td>
-                    <td className="px-6 py-3 text-foreground">
-                      <span className="text-muted-foreground">{r.start}</span>
-                      <span className="text-primary mx-2">→</span>
-                      <span className="text-muted-foreground">{r.end}</span>
-                    </td>
-                    <td className="px-6 py-3">
-                      <span
-                        className="inline-block px-2 py-0.5 rounded text-[10px] font-mono uppercase"
-                        style={{
-                          color: DIFFICULTY_COLORS[r.difficulty],
-                          backgroundColor: `${DIFFICULTY_COLORS[r.difficulty]}15`,
-                        }}
-                      >
-                        {r.difficulty}
-                      </span>
-                    </td>
-                    <td className="px-6 py-3 text-right font-mono text-xs text-muted-foreground">
-                      {r.elapsed_sec.toFixed(2)}с
-                    </td>
-                    <td className="px-6 py-3 text-right font-mono text-xs text-muted-foreground">
-                      {r.path_len || "—"}
-                    </td>
-                    <td className="px-6 py-3 text-center">
-                      <span
-                        className="inline-block w-2 h-2 rounded-full"
-                        style={{ backgroundColor: COLORS[r.status as keyof typeof COLORS] || COLORS.not_found }}
-                      />
-                    </td>
+          {isMobile ? (
+            <div className="px-4 pb-4 space-y-3">
+              {metrics.results.map((r) => (
+                <div key={r.case_id} className="rounded-lg border border-border/70 bg-secondary/20 p-3">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="font-mono text-xs text-muted-foreground">{r.case_id}</span>
+                    <span
+                      className="inline-block px-2 py-0.5 rounded text-[10px] font-mono uppercase"
+                      style={{
+                        color: DIFFICULTY_COLORS[r.difficulty],
+                        backgroundColor: `${DIFFICULTY_COLORS[r.difficulty]}15`,
+                      }}
+                    >
+                      {r.difficulty}
+                    </span>
+                  </div>
+                  <p className="text-sm text-foreground leading-snug">
+                    <span className="text-muted-foreground">{r.start}</span>
+                    <span className="text-primary mx-2">→</span>
+                    <span className="text-muted-foreground">{r.end}</span>
+                  </p>
+                  <div className="mt-2 flex items-center justify-between text-xs font-mono text-muted-foreground">
+                    <span>{r.elapsed_sec.toFixed(2)}с</span>
+                    <span>Путь: {r.path_len || "—"}</span>
+                    <span className="inline-block w-2 h-2 rounded-full" style={{ backgroundColor: COLORS[r.status as keyof typeof COLORS] || COLORS.not_found }} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="overflow-x-auto" style={{ WebkitOverflowScrolling: "touch" }}>
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-border text-xs font-mono text-muted-foreground uppercase">
+                    <th className="px-6 py-3 text-left">ID</th>
+                    <th className="px-6 py-3 text-left">Маршрут</th>
+                    <th className="px-6 py-3 text-left">Сложность</th>
+                    <th className="px-6 py-3 text-right">Время</th>
+                    <th className="px-6 py-3 text-right">Путь</th>
+                    <th className="px-6 py-3 text-center">Статус</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {metrics.results.map((r) => (
+                    <tr
+                      key={r.case_id}
+                      className="border-b border-border/50 hover:bg-secondary/30 transition-colors"
+                    >
+                      <td className="px-6 py-3 font-mono text-xs text-muted-foreground">{r.case_id}</td>
+                      <td className="px-6 py-3 text-foreground">
+                        <span className="text-muted-foreground">{r.start}</span>
+                        <span className="text-primary mx-2">→</span>
+                        <span className="text-muted-foreground">{r.end}</span>
+                      </td>
+                      <td className="px-6 py-3">
+                        <span
+                          className="inline-block px-2 py-0.5 rounded text-[10px] font-mono uppercase"
+                          style={{
+                            color: DIFFICULTY_COLORS[r.difficulty],
+                            backgroundColor: `${DIFFICULTY_COLORS[r.difficulty]}15`,
+                          }}
+                        >
+                          {r.difficulty}
+                        </span>
+                      </td>
+                      <td className="px-6 py-3 text-right font-mono text-xs text-muted-foreground">
+                        {r.elapsed_sec.toFixed(2)}с
+                      </td>
+                      <td className="px-6 py-3 text-right font-mono text-xs text-muted-foreground">
+                        {r.path_len || "—"}
+                      </td>
+                      <td className="px-6 py-3 text-center">
+                        <span
+                          className="inline-block w-2 h-2 rounded-full"
+                          style={{ backgroundColor: COLORS[r.status as keyof typeof COLORS] || COLORS.not_found }}
+                        />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </motion.div>
       </div>
     </div>
