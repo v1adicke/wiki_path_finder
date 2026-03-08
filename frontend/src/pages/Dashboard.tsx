@@ -129,7 +129,7 @@ const Dashboard = () => {
             className="rounded-xl border border-border bg-card/60 backdrop-blur-sm p-6"
           >
             <h3 className="text-sm font-mono text-muted-foreground mb-6 uppercase tracking-wider">Распределение статусов</h3>
-            <div style={{ touchAction: "pan-y" }}>
+            <div className="pointer-events-none md:pointer-events-auto" style={{ touchAction: "pan-y" }}>
               <ResponsiveContainer width="100%" height={240}>
                 <PieChart>
                   <Pie
@@ -166,7 +166,7 @@ const Dashboard = () => {
             className="rounded-xl border border-border bg-card/60 backdrop-blur-sm p-6"
           >
             <h3 className="text-sm font-mono text-muted-foreground mb-6 uppercase tracking-wider">Успешность по сложности</h3>
-            <div style={{ touchAction: "pan-y" }}>
+            <div className="pointer-events-none md:pointer-events-auto" style={{ touchAction: "pan-y" }}>
               <ResponsiveContainer width="100%" height={240}>
                 <BarChart data={diffData} barSize={32}>
                   <XAxis dataKey="name" tick={{ fill: "hsl(0,0%,55%)", fontSize: 11 }} axisLine={false} tickLine={false} />
@@ -189,7 +189,7 @@ const Dashboard = () => {
             className="rounded-xl border border-border bg-card/60 backdrop-blur-sm p-6"
           >
             <h3 className="text-sm font-mono text-muted-foreground mb-6 uppercase tracking-wider">Среднее время по сложности</h3>
-            <div style={{ touchAction: "pan-y" }}>
+            <div className="pointer-events-none md:pointer-events-auto" style={{ touchAction: "pan-y" }}>
               <ResponsiveContainer width="100%" height={240}>
                 <BarChart data={diffData} barSize={32}>
                   <XAxis dataKey="name" tick={{ fill: "hsl(0,0%,55%)", fontSize: 11 }} axisLine={false} tickLine={false} />
@@ -212,7 +212,7 @@ const Dashboard = () => {
             className="rounded-xl border border-border bg-card/60 backdrop-blur-sm p-6"
           >
             <h3 className="text-sm font-mono text-muted-foreground mb-6 uppercase tracking-wider">Время vs Длина пути</h3>
-            <div style={{ touchAction: "pan-y" }}>
+            <div className="pointer-events-none md:pointer-events-auto" style={{ touchAction: "pan-y" }}>
               <ResponsiveContainer width="100%" height={240}>
                 <ScatterChart>
                   <CartesianGrid strokeDasharray="3 3" stroke="hsl(0,0%,14%)" />
