@@ -129,24 +129,26 @@ const Dashboard = () => {
             className="rounded-xl border border-border bg-card/60 backdrop-blur-sm p-6"
           >
             <h3 className="text-sm font-mono text-muted-foreground mb-6 uppercase tracking-wider">Распределение статусов</h3>
-            <ResponsiveContainer width="100%" height={240}>
-              <PieChart>
-                <Pie
-                  data={statusData}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={60}
-                  outerRadius={90}
-                  dataKey="value"
-                  stroke="none"
-                >
-                  {statusData.map((entry, i) => (
-                    <Cell key={i} fill={entry.fill} />
-                  ))}
-                </Pie>
-                <Tooltip content={<CustomTooltip />} />
-              </PieChart>
-            </ResponsiveContainer>
+            <div style={{ touchAction: "pan-y" }}>
+              <ResponsiveContainer width="100%" height={240}>
+                <PieChart>
+                  <Pie
+                    data={statusData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={60}
+                    outerRadius={90}
+                    dataKey="value"
+                    stroke="none"
+                  >
+                    {statusData.map((entry, i) => (
+                      <Cell key={i} fill={entry.fill} />
+                    ))}
+                  </Pie>
+                  <Tooltip content={<CustomTooltip />} />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
             <div className="flex justify-center gap-6 mt-4">
               {statusData.map((s) => (
                 <div key={s.name} className="flex items-center gap-2 text-xs">
@@ -164,18 +166,20 @@ const Dashboard = () => {
             className="rounded-xl border border-border bg-card/60 backdrop-blur-sm p-6"
           >
             <h3 className="text-sm font-mono text-muted-foreground mb-6 uppercase tracking-wider">Успешность по сложности</h3>
-            <ResponsiveContainer width="100%" height={240}>
-              <BarChart data={diffData} barSize={32}>
-                <XAxis dataKey="name" tick={{ fill: "hsl(0,0%,55%)", fontSize: 11 }} axisLine={false} tickLine={false} />
-                <YAxis hide domain={[0, 100]} />
-                <Tooltip content={<CustomTooltip />} />
-                <Bar dataKey="success_rate" name="Успешность %" radius={[6, 6, 0, 0]}>
-                  {diffData.map((entry, i) => (
-                    <Cell key={i} fill={entry.fill} fillOpacity={0.8} />
-                  ))}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
+            <div style={{ touchAction: "pan-y" }}>
+              <ResponsiveContainer width="100%" height={240}>
+                <BarChart data={diffData} barSize={32}>
+                  <XAxis dataKey="name" tick={{ fill: "hsl(0,0%,55%)", fontSize: 11 }} axisLine={false} tickLine={false} />
+                  <YAxis hide domain={[0, 100]} />
+                  <Tooltip content={<CustomTooltip />} />
+                  <Bar dataKey="success_rate" name="Успешность %" radius={[6, 6, 0, 0]}>
+                    {diffData.map((entry, i) => (
+                      <Cell key={i} fill={entry.fill} fillOpacity={0.8} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
           </motion.div>
 
           <motion.div
@@ -185,18 +189,20 @@ const Dashboard = () => {
             className="rounded-xl border border-border bg-card/60 backdrop-blur-sm p-6"
           >
             <h3 className="text-sm font-mono text-muted-foreground mb-6 uppercase tracking-wider">Среднее время по сложности</h3>
-            <ResponsiveContainer width="100%" height={240}>
-              <BarChart data={diffData} barSize={32}>
-                <XAxis dataKey="name" tick={{ fill: "hsl(0,0%,55%)", fontSize: 11 }} axisLine={false} tickLine={false} />
-                <YAxis hide />
-                <Tooltip content={<CustomTooltip />} />
-                <Bar dataKey="avg_time" name="Ср. время (с)" radius={[6, 6, 0, 0]}>
-                  {diffData.map((entry, i) => (
-                    <Cell key={i} fill={entry.fill} fillOpacity={0.6} />
-                  ))}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
+            <div style={{ touchAction: "pan-y" }}>
+              <ResponsiveContainer width="100%" height={240}>
+                <BarChart data={diffData} barSize={32}>
+                  <XAxis dataKey="name" tick={{ fill: "hsl(0,0%,55%)", fontSize: 11 }} axisLine={false} tickLine={false} />
+                  <YAxis hide />
+                  <Tooltip content={<CustomTooltip />} />
+                  <Bar dataKey="avg_time" name="Ср. время (с)" radius={[6, 6, 0, 0]}>
+                    {diffData.map((entry, i) => (
+                      <Cell key={i} fill={entry.fill} fillOpacity={0.6} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
           </motion.div>
 
           <motion.div
@@ -206,19 +212,21 @@ const Dashboard = () => {
             className="rounded-xl border border-border bg-card/60 backdrop-blur-sm p-6"
           >
             <h3 className="text-sm font-mono text-muted-foreground mb-6 uppercase tracking-wider">Время vs Длина пути</h3>
-            <ResponsiveContainer width="100%" height={240}>
-              <ScatterChart>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(0,0%,14%)" />
-                <XAxis type="number" dataKey="x" name="Время (с)" tick={{ fill: "hsl(0,0%,55%)", fontSize: 11 }} axisLine={false} />
-                <YAxis type="number" dataKey="y" name="Длина пути" tick={{ fill: "hsl(0,0%,55%)", fontSize: 11 }} axisLine={false} />
-                <Tooltip content={<CustomTooltip />} />
-                <Scatter data={scatterData.filter(d => d.y > 0)} name="Результаты">
-                  {scatterData.filter(d => d.y > 0).map((entry, i) => (
-                    <Cell key={i} fill={entry.fill} fillOpacity={0.8} />
-                  ))}
-                </Scatter>
-              </ScatterChart>
-            </ResponsiveContainer>
+            <div style={{ touchAction: "pan-y" }}>
+              <ResponsiveContainer width="100%" height={240}>
+                <ScatterChart>
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(0,0%,14%)" />
+                  <XAxis type="number" dataKey="x" name="Время (с)" tick={{ fill: "hsl(0,0%,55%)", fontSize: 11 }} axisLine={false} />
+                  <YAxis type="number" dataKey="y" name="Длина пути" tick={{ fill: "hsl(0,0%,55%)", fontSize: 11 }} axisLine={false} />
+                  <Tooltip content={<CustomTooltip />} />
+                  <Scatter data={scatterData.filter(d => d.y > 0)} name="Результаты">
+                    {scatterData.filter(d => d.y > 0).map((entry, i) => (
+                      <Cell key={i} fill={entry.fill} fillOpacity={0.8} />
+                    ))}
+                  </Scatter>
+                </ScatterChart>
+              </ResponsiveContainer>
+            </div>
           </motion.div>
         </div>
 
