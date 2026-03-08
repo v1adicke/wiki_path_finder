@@ -7,6 +7,19 @@ export const Navbar = () => {
   const location = useLocation();
   const { theme, toggle } = useTheme();
 
+  const socialLinks = [
+    {
+      href: "https://github.com/v1adicke/wiki_path_finder",
+      label: "GitHub",
+      iconSrc: "/icons/social/github.svg",
+    },
+    {
+      href: "https://t.me/wikipathfinder_bot",
+      label: "Telegram",
+      iconSrc: "/icons/social/telegram.svg",
+    },
+  ];
+
   const links = [
     { to: "/", label: "Поиск", icon: Search },
     { to: "/dashboard", label: "Бенчмарки", icon: BarChart3 },
@@ -53,6 +66,19 @@ export const Navbar = () => {
       </div>
 
       <div className="flex items-center gap-3">
+        {socialLinks.map((social) => (
+          <a
+            key={social.href}
+            href={social.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="p-1.5 rounded-md border border-border bg-secondary/30 hover:bg-secondary/50 transition-colors"
+            aria-label={social.label}
+            title={social.label}
+          >
+            <img src={social.iconSrc} alt={social.label} className="w-3.5 h-3.5" />
+          </a>
+        ))}
         <button
           onClick={toggle}
           className="p-1.5 rounded-md border border-border bg-secondary/30 text-muted-foreground hover:text-foreground transition-colors"

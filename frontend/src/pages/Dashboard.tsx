@@ -28,6 +28,13 @@ const DIFFICULTY_LABELS: Record<string, string> = {
   very_hard: "Очень сложные",
 };
 
+const DIFFICULTY_ORDER: Record<string, number> = {
+  easy: 0,
+  medium: 1,
+  hard: 2,
+  very_hard: 3,
+};
+
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (!active || !payload?.length) return null;
   return (
@@ -93,6 +100,14 @@ const Dashboard = () => {
     status: r.status,
     fill: COLORS[r.status as keyof typeof COLORS] || COLORS.not_found,
   }));
+
+  const sortedResults = [...metrics.results].sort((a, b) => {
+    const difficultyDiff = (DIFFICULTY_ORDER[a.difficulty] ?? Number.MAX_SAFE_INTEGER)
+      - (DIFFICULTY_ORDER[b.difficulty] ?? Number.MAX_SAFE_INTEGER);
+    if (difficultyDiff !== 0) return difficultyDiff;
+
+    return a.case_id.localeCompare(b.case_id);
+  });
 
   const statCards = [
     { label: "Всего тестов", value: metrics.total_cases, icon: Activity },
@@ -267,7 +282,7 @@ const Dashboard = () => {
           <h3 className="text-sm font-mono text-muted-foreground uppercase tracking-wider p-6 pb-4">Все результаты</h3>
           {isMobile ? (
             <div className="px-4 pb-4 space-y-3">
-              {metrics.results.map((r) => (
+              {sortedResults.map((r) => (
                 <div key={r.case_id} className="rounded-lg border border-border/70 bg-secondary/20 p-3">
                   <div className="flex items-center justify-between mb-2">
                     <span className="font-mono text-xs text-muted-foreground">{r.case_id}</span>
@@ -308,7 +323,7 @@ const Dashboard = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {metrics.results.map((r) => (
+                  {sortedResults.map((r) => (
                     <tr
                       key={r.case_id}
                       className="border-b border-border/50 hover:bg-secondary/30 transition-colors"
