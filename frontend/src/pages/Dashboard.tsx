@@ -44,9 +44,24 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 
 const Dashboard = () => {
   const [metrics, setMetrics] = useState<DashboardMetrics | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     fetchDashboardMetrics().then(setMetrics);
+  }, []);
+
+  useEffect(() => {
+    const media = window.matchMedia("(max-width: 768px)");
+    const apply = () => setIsMobile(media.matches);
+    apply();
+
+    if (typeof media.addEventListener === "function") {
+      media.addEventListener("change", apply);
+      return () => media.removeEventListener("change", apply);
+    }
+
+    media.addListener(apply);
+    return () => media.removeListener(apply);
   }, []);
 
   if (!metrics) {
@@ -212,21 +227,34 @@ const Dashboard = () => {
             className="rounded-xl border border-border bg-card/60 backdrop-blur-sm p-6"
           >
             <h3 className="text-sm font-mono text-muted-foreground mb-6 uppercase tracking-wider">Время vs Длина пути</h3>
-            <div className="pointer-events-none md:pointer-events-auto" style={{ touchAction: "pan-y" }}>
-              <ResponsiveContainer width="100%" height={240}>
-                <ScatterChart>
-                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(0,0%,14%)" />
-                  <XAxis type="number" dataKey="x" name="Время (с)" tick={{ fill: "hsl(0,0%,55%)", fontSize: 11 }} axisLine={false} />
-                  <YAxis type="number" dataKey="y" name="Длина пути" tick={{ fill: "hsl(0,0%,55%)", fontSize: 11 }} axisLine={false} />
-                  <Tooltip content={<CustomTooltip />} />
-                  <Scatter data={scatterData.filter(d => d.y > 0)} name="Результаты">
-                    {scatterData.filter(d => d.y > 0).map((entry, i) => (
-                      <Cell key={i} fill={entry.fill} fillOpacity={0.8} />
-                    ))}
-                  </Scatter>
-                </ScatterChart>
-              </ResponsiveContainer>
-            </div>
+            {isMobile ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                <div className="rounded-lg border border-border bg-secondary/30 p-3">
+                  <p className="text-xs text-muted-foreground mb-1">Точек на графике</p>
+                  <p className="font-mono text-foreground">{scatterData.filter((d) => d.y > 0).length}</p>
+                </div>
+                <div className="rounded-lg border border-border bg-secondary/30 p-3">
+                  <p className="text-xs text-muted-foreground mb-1">Средняя длина пути</p>
+                  <p className="font-mono text-foreground">{metrics.avg_path_len_success.toFixed(2)}</p>
+                </div>
+              </div>
+            ) : (
+              <div className="pointer-events-none md:pointer-events-auto" style={{ touchAction: "pan-y" }}>
+                <ResponsiveContainer width="100%" height={240}>
+                  <ScatterChart>
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(0,0%,14%)" />
+                    <XAxis type="number" dataKey="x" name="Время (с)" tick={{ fill: "hsl(0,0%,55%)", fontSize: 11 }} axisLine={false} />
+                    <YAxis type="number" dataKey="y" name="Длина пути" tick={{ fill: "hsl(0,0%,55%)", fontSize: 11 }} axisLine={false} />
+                    <Tooltip content={<CustomTooltip />} />
+                    <Scatter data={scatterData.filter(d => d.y > 0)} name="Результаты">
+                      {scatterData.filter(d => d.y > 0).map((entry, i) => (
+                        <Cell key={i} fill={entry.fill} fillOpacity={0.8} />
+                      ))}
+                    </Scatter>
+                  </ScatterChart>
+                </ResponsiveContainer>
+              </div>
+            )}
           </motion.div>
         </div>
 
@@ -237,7 +265,7 @@ const Dashboard = () => {
           className="mt-8 rounded-xl border border-border bg-card/60 backdrop-blur-sm overflow-hidden"
         >
           <h3 className="text-sm font-mono text-muted-foreground uppercase tracking-wider p-6 pb-4">Все результаты</h3>
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto" style={{ WebkitOverflowScrolling: "touch" }}>
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border text-xs font-mono text-muted-foreground uppercase">
@@ -250,12 +278,9 @@ const Dashboard = () => {
                 </tr>
               </thead>
               <tbody>
-                {metrics.results.map((r, i) => (
-                  <motion.tr
+                {metrics.results.map((r) => (
+                  <tr
                     key={r.case_id}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.8 + i * 0.02 }}
                     className="border-b border-border/50 hover:bg-secondary/30 transition-colors"
                   >
                     <td className="px-6 py-3 font-mono text-xs text-muted-foreground">{r.case_id}</td>
@@ -287,7 +312,7 @@ const Dashboard = () => {
                         style={{ backgroundColor: COLORS[r.status as keyof typeof COLORS] || COLORS.not_found }}
                       />
                     </td>
-                  </motion.tr>
+                  </tr>
                 ))}
               </tbody>
             </table>
