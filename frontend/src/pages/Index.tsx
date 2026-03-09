@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, ArrowRight, Sparkles } from "lucide-react";
+import { Search, ArrowRight, Sparkles, ArrowUpDown } from "lucide-react";
 import { startSearch, SearchResult, SearchStatus } from "@/lib/api";
 import { SearchLoader } from "@/components/SearchLoader";
 import { PathTimeline } from "@/components/PathTimeline";
@@ -13,6 +13,12 @@ const SearchPage = () => {
   const [errorText, setErrorText] = useState<string | null>(null);
 
   const isSearching = status === "heuristic" || status === "exact";
+
+  const handleSwapArticles = useCallback(() => {
+    if (isSearching) return;
+    setStartArticle(endArticle);
+    setEndArticle(startArticle);
+  }, [endArticle, isSearching, startArticle]);
 
   const handleSearch = useCallback(async () => {
     if (!startArticle.trim() || !endArticle.trim() || isSearching) return;
@@ -92,7 +98,19 @@ const SearchPage = () => {
 
             <div className="flex items-center justify-center">
               <div className="h-px flex-1 bg-border" />
-              <ArrowRight className="mx-4 w-4 h-4 text-muted-foreground" />
+              <motion.button
+                whileTap={{ scale: 0.95 }}
+                whileHover={{ scale: 1.05 }}
+                type="button"
+                onClick={handleSwapArticles}
+                disabled={isSearching}
+                className="mx-3 p-2 rounded-md border border-border bg-secondary/40 text-muted-foreground hover:text-foreground hover:bg-secondary/60 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                aria-label="Поменять местами начальную и конечную статьи"
+                title="Поменять местами"
+              >
+                <ArrowUpDown className="w-4 h-4" />
+              </motion.button>
+              <ArrowRight className="mr-1 w-4 h-4 text-muted-foreground" />
               <div className="h-px flex-1 bg-border" />
             </div>
 
