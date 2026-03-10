@@ -52,3 +52,6 @@ logs/
 telegram_bot/__pycache__/
 search/__pycache__/
 reports/
+
+# Rust build artifacts
+rust_search_service/target/
