@@ -1,4 +1,15 @@
 services:
+  rust-search:
+    build:
+      context: ./rust_search_service
+      dockerfile: Dockerfile
+    container_name: wiki-path-rust-search
+    environment:
+      - RUST_CACHE_SIZE=${RUST_CACHE_SIZE:-4000}
+      - RUST_WIKI_MAX_CONCURRENCY=${RUST_WIKI_MAX_CONCURRENCY:-32}
+      - RUST_WIKI_RETRIES=${RUST_WIKI_RETRIES:-3}
+    restart: unless-stopped
+
   api:
     build:
       context: .
@@ -7,10 +18,16 @@ services:
     command: ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000"]
     env_file:
       - .env
+    environment:
+      - USE_RUST_SEARCH=${USE_RUST_SEARCH:-False}
+      - RUST_SEARCH_URL=${RUST_SEARCH_URL:-http://rust-search:8081}
+      - RUST_SEARCH_TIMEOUT=${RUST_SEARCH_TIMEOUT:-35}
     volumes:
       - reports_data:/app/reports
     ports:
       - "8000:8000"
+    depends_on:
+      - rust-search
     restart: unless-stopped
 
   #frontend:
