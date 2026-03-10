@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, ArrowRight, Sparkles, ArrowUpDown } from "lucide-react";
+import { Search, Sparkles, ArrowUpDown } from "lucide-react";
 import { startSearch, SearchResult, SearchStatus } from "@/lib/api";
 import { SearchLoader } from "@/components/SearchLoader";
 import { PathTimeline } from "@/components/PathTimeline";
@@ -110,7 +110,6 @@ const SearchPage = () => {
               >
                 <ArrowUpDown className="w-4 h-4" />
               </motion.button>
-              <ArrowRight className="mr-1 w-4 h-4 text-muted-foreground" />
               <div className="h-px flex-1 bg-border" />
             </div>
 
