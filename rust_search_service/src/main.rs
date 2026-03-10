@@ -1,5 +1,4 @@
 use std::cmp::Ordering;
-use std::collections::{HashMap, HashSet};
 use std::sync::Arc;
 use std::time::{Duration, Instant};
 
@@ -11,11 +10,15 @@ use lru::LruCache;
 use once_cell::sync::Lazy;
 use regex::Regex;
 use reqwest::Client;
+use rustc_hash::{FxHashMap, FxHashSet};
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 use tokio::sync::{Mutex, Semaphore};
 
 static TOKEN_RE: Lazy<Regex> = Lazy::new(|| Regex::new(r"[\w\-]+").expect("token regex build failed"));
+
+type FastMap<K, V> = FxHashMap<K, V>;
+type FastSet<T> = FxHashSet<T>;
 
 #[derive(Clone)]
 struct AppState {
@@ -367,16 +370,18 @@ async fn search_bidirectional(
 ) -> Option<Vec<String>> {
     let t0 = Instant::now();
 
-    let mut fwd_front: HashSet<String> = HashSet::from([start.to_string()]);
-    let mut bwd_front: HashSet<String> = HashSet::from([end.to_string()]);
+    let mut fwd_front: FastSet<String> = FastSet::default();
+    fwd_front.insert(start.to_string());
+    let mut bwd_front: FastSet<String> = FastSet::default();
+    bwd_front.insert(end.to_string());
 
-    let mut prev_fwd: HashMap<String, Option<String>> = HashMap::new();
-    let mut prev_bwd: HashMap<String, Option<String>> = HashMap::new();
+    let mut prev_fwd: FastMap<String, Option<String>> = FastMap::default();
+    let mut prev_bwd: FastMap<String, Option<String>> = FastMap::default();
     prev_fwd.insert(start.to_string(), None);
     prev_bwd.insert(end.to_string(), None);
 
-    let mut dist_fwd: HashMap<String, usize> = HashMap::new();
-    let mut dist_bwd: HashMap<String, usize> = HashMap::new();
+    let mut dist_fwd: FastMap<String, usize> = FastMap::default();
+    let mut dist_bwd: FastMap<String, usize> = FastMap::default();
     dist_fwd.insert(start.to_string(), 0);
     dist_bwd.insert(end.to_string(), 0);
 
@@ -385,7 +390,7 @@ async fn search_bidirectional(
 
     let end_tokens = tokenize_title(end);
     let start_tokens = tokenize_title(start);
-    let mut token_cache: HashMap<String, HashSet<String>> = HashMap::new();
+    let mut token_cache: FastMap<String, FastSet<String>> = FastMap::default();
 
     while !fwd_front.is_empty() && !bwd_front.is_empty() && t0.elapsed() < time_budget {
         if let Some(border_node) = find_intersection(&fwd_front, &bwd_front) {
@@ -410,7 +415,7 @@ async fn search_bidirectional(
                 .collect()
                 .await;
 
-            let mut next_front: HashSet<String> = HashSet::new();
+            let mut next_front: FastSet<String> = FastSet::default();
             for (node, neighbors) in responses {
                 stats.expanded_nodes += 1;
                 let d = *dist_fwd.get(&node).unwrap_or(&0);
@@ -449,7 +454,7 @@ async fn search_bidirectional(
                 .collect()
                 .await;
 
-            let mut next_front: HashSet<String> = HashSet::new();
+            let mut next_front: FastSet<String> = FastSet::default();
             for (node, neighbors) in responses {
                 stats.expanded_nodes += 1;
                 let d = *dist_bwd.get(&node).unwrap_or(&0);
@@ -492,7 +497,7 @@ fn normalize_title(value: &str) -> String {
         .join(" ")
 }
 
-fn tokenize_title(title: &str) -> HashSet<String> {
+fn tokenize_title(title: &str) -> FastSet<String> {
     TOKEN_RE
         .find_iter(&title.to_lowercase())
         .map(|m| m.as_str().to_string())
@@ -509,10 +514,10 @@ fn adaptive_neighbor_cap(base: Option<usize>, depth: usize) -> Option<usize> {
 
 fn rank_neighbors(
     neighbors: Vec<String>,
-    target_tokens: &HashSet<String>,
+    target_tokens: &FastSet<String>,
     target_title: &str,
     max_neighbors: Option<usize>,
-    token_cache: &mut HashMap<String, HashSet<String>>,
+    token_cache: &mut FastMap<String, FastSet<String>>,
 ) -> Vec<String> {
     if neighbors.is_empty() {
         return neighbors;
@@ -527,23 +532,28 @@ fn rank_neighbors(
     }
 
     let target_lc = target_title.to_lowercase();
-    let mut ranked = neighbors;
+    let mut scored: Vec<(String, (i32, i32, i32))> = neighbors
+        .into_iter()
+        .map(|title| {
+            let score = neighbor_score(&title, target_tokens, &target_lc, token_cache);
+            (title, score)
+        })
+        .collect();
 
-    ranked.sort_by(|a, b| {
-        let a_score = neighbor_score(a, target_tokens, &target_lc, token_cache);
-        let b_score = neighbor_score(b, target_tokens, &target_lc, token_cache);
-        compare_scores_desc(a_score, b_score)
-    });
+    if scored.len() > limit {
+        scored.select_nth_unstable_by(limit, |a, b| compare_scores_desc(a.1, b.1));
+        scored.truncate(limit);
+    }
 
-    ranked.truncate(limit);
-    ranked
+    scored.sort_unstable_by(|a, b| compare_scores_desc(a.1, b.1));
+    scored.into_iter().map(|(title, _)| title).collect()
 }
 
 fn neighbor_score(
     title: &str,
-    target_tokens: &HashSet<String>,
+    target_tokens: &FastSet<String>,
     target_lc: &str,
-    token_cache: &mut HashMap<String, HashSet<String>>,
+    token_cache: &mut FastMap<String, FastSet<String>>,
 ) -> (i32, i32, i32) {
     let title_lc = title.to_lowercase();
     let cached_tokens = token_cache
@@ -563,7 +573,7 @@ fn compare_scores_desc(a: (i32, i32, i32), b: (i32, i32, i32)) -> Ordering {
     b.cmp(&a)
 }
 
-fn find_intersection(left: &HashSet<String>, right: &HashSet<String>) -> Option<String> {
+fn find_intersection(left: &FastSet<String>, right: &FastSet<String>) -> Option<String> {
     if left.len() <= right.len() {
         left.iter().find(|node| right.contains(*node)).cloned()
     } else {
@@ -571,7 +581,7 @@ fn find_intersection(left: &HashSet<String>, right: &HashSet<String>) -> Option<
     }
 }
 
-fn min_distance(front: &HashSet<String>, dist: &HashMap<String, usize>) -> usize {
+fn min_distance(front: &FastSet<String>, dist: &FastMap<String, usize>) -> usize {
     front
         .iter()
         .filter_map(|node| dist.get(node))
@@ -581,8 +591,8 @@ fn min_distance(front: &HashSet<String>, dist: &HashMap<String, usize>) -> usize
 }
 
 fn reconstruct_path(
-    prev_fwd: &HashMap<String, Option<String>>,
-    prev_bwd: &HashMap<String, Option<String>>,
+    prev_fwd: &FastMap<String, Option<String>>,
+    prev_bwd: &FastMap<String, Option<String>>,
     meet_node: &str,
 ) -> Vec<String> {
     let mut path_front: Vec<String> = Vec::new();
@@ -715,7 +725,7 @@ async fn fetch_backlinks_uncached(client: Client, title: String) -> Result<Vec<S
 }
 
 fn dedupe(items: Vec<String>) -> Vec<String> {
-    let mut seen: HashSet<String> = HashSet::new();
+    let mut seen: FastSet<String> = FastSet::default();
     let mut out: Vec<String> = Vec::new();
     for item in items {
         if seen.insert(item.clone()) {
