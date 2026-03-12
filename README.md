@@ -1,10 +1,9 @@
 # Wiki Path Finder
 
-Сервис, который ищет путь между двумя статьями русской Википедии.
+Сервис, который ищет путь между двумя статьями русской Википедии
 
 Реализация:
 - FastAPI backend
-- Rust search service (optional, high-performance mode)
 - React + Vite frontend
 - Telegram-бот на aiogram @wikipathfinder_bot
 
@@ -66,7 +65,7 @@ python -m telegram_bot.main
 
 ## Docker
 
-Поднять API (+ Rust search service по умолчанию):
+Поднять API:
 
 ```bash
 docker compose up --build
@@ -117,44 +116,6 @@ python -m benchmarking --total-cases 240 --time-limit 40 --concurrency 8 --out-j
 - `BOT_TOKEN` - токен Telegram-бота
 - `CORS_ALLOW_ORIGINS` - список origins для API через запятую
 - `VITE_API_BASE_URL` - URL backend для frontend (если не задано, используется `http://localhost:8000`)
-- `USE_RUST_SEARCH` - включить поиск через Rust сервис (`True`/`False`)
-- `RUST_SEARCH_URL` - URL Rust сервиса (по умолчанию `http://rust-search:8081` в Docker, `http://127.0.0.1:8081` локально)
-- `RUST_SEARCH_TIMEOUT` - timeout запроса к Rust сервису в секундах
-
-## Rust Search Service (локально)
-
-```bash
-cd rust_search_service
-cargo run --release
-```
-
-Healthcheck:
-
-```bash
-curl http://localhost:8081/health
-```
-
-Runtime metrics:
-
-```bash
-curl http://localhost:8081/metrics
-```
-
-После запуска сервиса включи в API:
-
-```env
-USE_RUST_SEARCH=True
-RUST_SEARCH_URL=http://127.0.0.1:8081
-RUST_SEARCH_TIMEOUT=35
-```
-
-Параметры самого Rust сервиса:
-
-```env
-RUST_CACHE_SIZE=4000
-RUST_WIKI_MAX_CONCURRENCY=32
-RUST_WIKI_RETRIES=3
-```
 
 ## Структура
 

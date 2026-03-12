@@ -14,7 +14,6 @@ from pydantic import BaseModel, Field
 
 from search.api_client import WikiApiClient
 from search.path_finder import WikiPathFinder
-from search.rust_client import RustSearchClient, RustSearchClientError
 
 
 FORBIDDEN_TITLE_CHARS = set("#<>[]{}|")
@@ -24,9 +23,6 @@ PRODUCTION: bool = os.getenv("PRODUCTION", "False").lower() in ("true", "1", "ye
 
 _RATE_LIMIT_CALLS: int = int(os.getenv("RATE_LIMIT_CALLS", "30"))
 _RATE_LIMIT_WINDOW: int = int(os.getenv("RATE_LIMIT_WINDOW", "60"))
-USE_RUST_SEARCH: bool = os.getenv("USE_RUST_SEARCH", "False").lower() in ("true", "1", "yes")
-RUST_SEARCH_URL: str = os.getenv("RUST_SEARCH_URL", "http://127.0.0.1:8081")
-RUST_SEARCH_TIMEOUT: float = float(os.getenv("RUST_SEARCH_TIMEOUT", "35"))
 
 
 class _RateLimiter:
@@ -143,20 +139,9 @@ async def search_path(payload: SearchRequest, request: Request) -> SearchRespons
     start_article = _validate_title(payload.start_article, "start_article")
     end_article = _validate_title(payload.end_article, "end_article")
 
-    result = None
-
-    if USE_RUST_SEARCH:
-        rust_client = RustSearchClient(base_url=RUST_SEARCH_URL, timeout_seconds=RUST_SEARCH_TIMEOUT)
-        try:
-            result = await rust_client.find_path(start_article, end_article, time_limit=30)
-        except RustSearchClientError:
-            # Keep API available even when Rust service is temporarily unavailable.
-            result = None
-
-    if result is None:
-        async with WikiApiClient() as client:
-            finder = WikiPathFinder(client=client, time_limit=30)
-            result = await finder.find_path(start_article, end_article)
+    async with WikiApiClient() as client:
+        finder = WikiPathFinder(client=client, time_limit=30)
+        result = await finder.find_path(start_article, end_article)
 
     return SearchResponse(**asdict(result))
 
